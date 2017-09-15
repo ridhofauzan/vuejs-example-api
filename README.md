@@ -1,6 +1,6 @@
-# blanja-vue
+# vuejs-example-api
 
-> A Vue.js project
+> This is a vuejs example project using webpack, bulma and public API
 
 ## Build Setup
 
