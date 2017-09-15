@@ -173,7 +173,7 @@ export default {
     //get profile
     axios.get('https://swapi.co/api/people/')
       .then(response => {
-        this.profiles = response.data.results.slice(0,4);
+        this.profiles = response.data.results.slice(0,2);
         for(var i = 0; i < this.profiles.length; i++){
           var profile_val = this.profiles[i];
           //cut last name
@@ -182,19 +182,23 @@ export default {
           var last_name             = full_name_s[full_name_s.length-1];
           profile_val['last_name']  = last_name;
           
-          var movie_urls            = profile_val.films;
-
-          
+          var movie_urls            = profile_val.films.splice(0,4);
+          profile_val['movie_details'] = [];
+          for (var j = 0; j < movie_urls.length; j++) {
+            axios.get(movie_urls[j])
+              .then(response => {
+                profile_val['movie_details'].push(response.data);
+              })
+              .catch(e => {
+                this.errors.push(e);
+              });
+          }
           this.datas.push(profile_val);
         }
-        
-        //console.log(this.datas);
       })
       .catch(e => {
         this.errors.push(e);
       });
-
-    
   } 
 }
 
@@ -250,25 +254,21 @@ for(var profile_val of this.profiles){
     border: 1px solid #eee
     border-left-width: 5px
     border-radius: 3px
-
-.bs-callout h4 
-    margin-top: 0
-    margin-bottom: 5px
-
-.bs-callout p:last-child 
-    margin-bottom: 0
-
-.bs-callout code 
-    border-radius: 3px
+    h4 
+      margin-top: 0
+      margin-bottom: 5px
+    p:last-child 
+      margin-bottom: 0
+    code 
+      border-radius: 3px
 
 .bs-callout+.bs-callout 
     margin-top: -5px
 
 .bs-callout-danger 
     border-left-color: $primary
-
-.bs-callout-danger h4 
-    color: $primary
+    h4 
+      color: $primary
 
 .bs-callout-mod 
     padding: 0
@@ -277,11 +277,10 @@ for(var profile_val of this.profiles){
     border-right: none
     border-bottom: none
     border-radius: 0px
-
-.bs-callout-mod h4 
-    font-family: 'Lato', 'Roboto'
-    color: #333
-    font-weight: bolder
+    h4 
+      font-family: 'Lato', 'Roboto'
+      color: #333
+      font-weight: bolder
 
 .container-hero
   background-color: $black
