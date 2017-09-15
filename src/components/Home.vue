@@ -173,7 +173,7 @@ export default {
     //get profile
     axios.get('https://swapi.co/api/people/')
       .then(response => {
-        this.profiles = response.data.results.slice(0,2);
+        this.profiles = response.data.results.slice(0,5);
         for(var i = 0; i < this.profiles.length; i++){
           var profile_val = this.profiles[i];
           //cut last name
@@ -182,23 +182,34 @@ export default {
           var last_name             = full_name_s[full_name_s.length-1];
           profile_val['last_name']  = last_name;
           
-          var movie_urls            = profile_val.films.splice(0,4);
-          profile_val['movie_details'] = [];
-          for (var j = 0; j < movie_urls.length; j++) {
-            axios.get(movie_urls[j])
+          var movie_urls            = profile_val.films.slice(0,4);
+          
+          var ayam = function(url, i) {
+            axios.get(url)
               .then(response => {
-                profile_val['movie_details'].push(response.data);
+                //console.log(url+' index dalam axios nya : '+index);
+                profile_val.movie_details.push(response.data);
               })
               .catch(e => {
                 this.errors.push(e);
-              });
+              })
+          };
+
+          profile_val['movie_details'] = [];
+          //console.log('length movie : '+movie_urls.length);
+          for (var j = 0; j < movie_urls.length; j++) {
+            ayam(movie_urls[j], i);
           }
+          //console.log(profile_val);
           this.datas.push(profile_val);
         }
+        //var a = JSON.stringify(this.datas);;
+        console.log(this.datas);
       })
       .catch(e => {
         this.errors.push(e);
       });
+      //console.log(this.errors);
   } 
 }
 
