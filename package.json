@@ -1,7 +1,7 @@
 {
-  "name": "blanja-vue",
-  "version": "1.0.0",
-  "description": "A Vue.js project",
+  "name": "vuejs-example-api",
+  "version": "0.1",
+  "description": "This is a vuejs example project using webpack, bulma and public API",
   "author": "Ridho Fauzan ridhofauzan92@gmail.com",
   "private": true,
   "scripts": {
