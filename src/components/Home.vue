@@ -1,10 +1,10 @@
 <template>
-  <div class="home" v-if="profiles && profiles.length">
-    <div v-for="(profile_v, profile_i) in profiles" :key="profile_i">
+  <div class="home" v-if="datas && datas.length">
+    <div v-for="(data_v, data_i) in datas" :key="data_i">
       <section>
         <div class="container">
           <div class="bs-callout bs-callout-danger bs-callout-mod">
-            <h4>{{ profile_v.name }}</h4>
+            <h4>{{ data_v.name }}</h4>
           </div>
         </div>
       </section>
@@ -22,32 +22,32 @@
                     <tr>
                       <td>Height</td>
                       <td>:</td>
-                      <td>{{ profile_v.height }}</td>
+                      <td>{{ data_v.height }}</td>
                     </tr>
                     <tr>
                       <td>Mass</td>
                       <td>:</td>
-                      <td>{{ profile_v.mass }}</td>
+                      <td>{{ data_v.mass }}</td>
                     </tr>
                     <tr>
                       <td>Hair Color</td>
                       <td>:</td>
-                      <td>{{ profile_v.hair_color }}</td>
+                      <td>{{ data_v.hair_color }}</td>
                     </tr>
                     <tr>
                       <td>Skin Color</td>
                       <td>:</td>
-                      <td>{{ profile_v.skin_color }}</td>
+                      <td>{{ data_v.skin_color }}</td>
                     </tr>
                     <tr>
                       <td>Birth Year</td>
                       <td>:</td>
-                      <td>{{ profile_v.birth_year }}</td>
+                      <td>{{ data_v.birth_year }}</td>
                     </tr>
                     <tr>
                       <td>Gender</td>
                       <td>:</td>
-                      <td>{{ profile_v.gender }}</td>
+                      <td>{{ data_v.gender }}</td>
                     </tr>
                   </table>
                 </div>
@@ -60,7 +60,7 @@
               <nav class="level">
                 <div class="level-left">
                   <div class="level-item">
-                    <h4 class="title is-4 title-mod">{{ last_name_v }}'s Movie</h4>
+                    <h4 class="title is-4 title-mod">{{ data_v.last_name }}'s Movie</h4>
                   </div>                
                 </div>
 
@@ -165,15 +165,41 @@ export default {
     movies: [],
     movie_s: [],
     relateds: [],
-    errors: []
+    errors: [],
+    datas:[]
   }),
 
   created(){
     //get profile
     axios.get('https://swapi.co/api/people/')
       .then(response => {
-        this.profiles = response.data.results.slice(0,1);
-        for(var profile_val of this.profiles){
+        this.profiles = response.data.results.slice(0,4);
+        for(var i = 0; i < this.profiles.length; i++){
+          var profile_val = this.profiles[i];
+          //cut last name
+          var full_name_o           = profile_val.name;
+          var full_name_s           = full_name_o.split(' ');
+          var last_name             = full_name_s[full_name_s.length-1];
+          profile_val['last_name']  = last_name;
+          
+          var movie_urls            = profile_val.films;
+
+          
+          this.datas.push(profile_val);
+        }
+        
+        //console.log(this.datas);
+      })
+      .catch(e => {
+        this.errors.push(e);
+      });
+
+    
+  } 
+}
+
+/**
+for(var profile_val of this.profiles){
           //cut last name
           var full_name_o   = profile_val.name;
           var full_name_s   = full_name_o.split(' ');
@@ -212,14 +238,7 @@ export default {
               });
           }
         }
-      })
-      .catch(e => {
-        this.errors.push(e);
-      });
-
-    
-  } 
-}
+ */
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
